@@ -53,7 +53,7 @@
     .row button:hover {
         box-shadow: inset 5px 5px 8px rgba(16, 16, 16, .1),
             inset -5px -5px 8px #fff;
-        background: #fff;
+        background: rgb(224, 224, 224);
     }
 
     .display #screen {
@@ -97,7 +97,6 @@
         background: #ff3399;
         color: #fff;
     }
-
     #ce:hover {
         box-shadow: inset 5px 5px 8px #e60073,
             inset -5px -5px 8px #ff3399;
@@ -107,79 +106,100 @@
 <body>
 
     <div class="container">
+        <p style="color: red; " id="error"></p>
         <div class="display">
-            <input id="screen" type="text" placeholder="0">
+            <input id="screen" type="text" placeholder="0" disabled>
         </div>
 
         <div class="btns">
             <div class="row">
                 <button id="ce" onclick="backspc()">CE</button>
                 <button onclick="fact()">x!</button>
-                <button class="btn">(</button>
-                <button class="btn">)</button>
-                <button class="btn">%</button>
+                <button onclick="getValue('(')">(</button>
+                <button onclick="getValue(')')">)</button>
+                <button onclick="getValue('%')">%</button>
                 <button id="ac" onclick="screen.value=''">AC</button>
             </div>
 
             <div class="row">
                 <button onclick="sin()">sin</button>
                 <button onclick="pi()">π</button>
-                <button class="btn">7</button>
-                <button class="btn">8</button>
-                <button class="btn">9</button>
-                <button class="btn">÷</button>
+                <button onclick="getValue(7)">7</button>
+                <button onclick="getValue(8)">8</button>
+                <button onclick="getValue(9)">9</button>
+                <button onclick="getValue('/')">÷</button>
             </div>
 
             <div class="row">
                 <button onclick="cos()">cos</button>
                 <button onclick="log()">log</button>
-                <button class="btn">4</button>
-                <button class="btn">5</button>
-                <button class="btn">6</button>
-                <button class="btn">×</button>
+                <button onclick="getValue(4)">4</button>
+                <button onclick="getValue(5)">5</button>
+                <button onclick="getValue(6)">6</button>
+                <button onclick="getValue('*')">×</button>
             </div>
 
             <div class="row">
                 <button onclick="tan()">tan</button>
                 <button onclick="sqrt()">√</button>
-                <button class="btn">1</button>
-                <button class="btn">2</button>
-                <button class="btn">3</button>
-                <button class="btn">-</button>
+                <button onclick="getValue(1)">1</button>
+                <button onclick="getValue(2)">2</button>
+                <button onclick="getValue(3)">3</button>
+                <button onclick="getValue('-')">-</button>
             </div>
 
             <div class="row">
                 <button onclick="e()">e</button>
                 <button onclick="pow()">x <span style="position: relative; bottom: .4em; right: .1em;">y</span>
                 </button>
-                <button class="btn">0</button>
-                <button class="btn">.</button>
-                <button id="eval" onclick="screen.value=eval(screen.value)">=</button>
-                <button class="btn">+</button>
+                <button onclick="getValue(0)">0</button>
+                <button onclick="getValue('.')">.</button>
+                <button id="eval" onclick="sum()">=</button>
+                <button onclick="getValue('+')">+</button>
             </div>
         </div>
     </div>
 </body>
 <script>
-    var screen = document.querySelector('#screen');
-    var btn = document.querySelectorAll('.btn');
+        var screen = document.getElementById('screen');
+        var operaters = ['+' , '-' , '*' , '/' , '%'];
+            var operaters1 = ['+' , '-' , '*' , '/' , '%', '('];
+        var error = document.getElementById('error')
 
-    /*============ For getting the value of btn, Here we use for loop ============*/
-    for (item of btn) {
-        item.addEventListener('click', (e) => {
-            btntext = e.target.innerText;
-
-            if (btntext == '×') {
-                btntext = '*';
+        function getValue(val){
+        var lastIndex = screen.value.length-1;
+        var lastChart = screen.value[lastIndex]
+       
+        if(operaters.includes(val) && operaters.includes(lastChart)) {
+            if(val !== lastChart) {
+                var temp = screen.value.split('');
+                temp.splice(lastIndex, 1, val);
+                screen.value = temp.join('');
             }
+        }        
+        else{
+            screen.value += val
+        }
+}
 
-            if (btntext == '÷') {
-                btntext = '/';
-            }
-            screen.value += btntext;
-        });
+function sum(){
+    lastChart   = screen.value[screen.value.length-1]
+    if(operaters1.includes(lastChart)){
+        error.innerHTML = 'Invalaid Experssion';
     }
+    else
+    {
+        var answer = eval(screen.value)
+        screen.value = answer
+        error.innerHTML = '';
+   
+if(answer == undefined){
+    screen.value = ''
+}
 
+}
+
+}               
     function sin() {
         screen.value = Math.sin(screen.value);
     }
@@ -227,6 +247,6 @@
 
     function backspc() {
         screen.value = screen.value.substr(0, screen.value.length - 1);
-    }
+    }                                                                   
 </script>
 </html>
